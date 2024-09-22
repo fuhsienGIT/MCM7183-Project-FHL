@@ -11,7 +11,7 @@ app.title = "MCM7183 Exercise 3"
 server = app.server
 
 df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/Big_Black_Money_Dataset.csv")
-subset_Illegal = df[df['Source of Money'].isin([Illegal])]
+subset_Illegal = df[df['Source of Money'].isin('Illegal')]
 
 image_path = 'https://raw.githubusercontent.com/wenjiun/MCM7183Exercise3/main/assets/logo-mmu.png'
 
