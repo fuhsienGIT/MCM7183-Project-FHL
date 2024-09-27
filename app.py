@@ -10,64 +10,53 @@ app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[db
 app.title = "MCM7183 Exercise 3"
 server = app.server
 
-# Sample DataFrame for sales and profit
-data = {
-    'Category': ['Electronics', 'Furniture', 'Clothing', 'Food'],
-    'Sales': [1000, 1500, 700, 1200],
-    'Profit': [200, 300, 150, 250]
-}
+# Sample data for the graphs
+df = pd.DataFrame({
+    "Category": ["A", "B", "C", "D"],
+    "Value1": [10, 20, 30, 40],
+    "Value2": [40, 30, 20, 10],
+    "Value3": [25, 35, 15, 45]
+})
 
-df = pd.DataFrame(data)
+# Define layout of the dashboard
+app.layout = html.Div(
+    style={'backgroundColor': '#2c2c2c', 'color': '#FFFFFF', 'textAlign': 'center'},
+    children=[
+        # Top navigation bar
+        html.Div(
+            style={'display': 'flex', 'justifyContent': 'center', 'padding': '10px', 'backgroundColor': '#333'},
+            children=[
+                html.Button('Graph 1', id='btn-1', style={'color': '#FFFFFF', 'backgroundColor': '#1f77b4'}),
+                html.Button('Graph 2', id='btn-2', style={'color': '#FFFFFF', 'backgroundColor': '#ff7f0e'}),
+                html.Button('Graph 3', id='btn-3', style={'color': '#FFFFFF', 'backgroundColor': '#2ca02c'}),
+            ]
+        ),
+        
+        # Content area for graphs
+        html.Div(
+            style={'display': 'flex', 'justifyContent': 'center', 'padding': '20px'},
+            children=[
+                # Graph 1 (Bar Chart)
+                dcc.Graph(
+                    id='bar-chart',
+                    figure=px.bar(df, x='Category', y='Value1', title='Bar Chart 1', template='plotly_dark')
+                ),
+                
+                # Graph 2 (Line Chart)
+                dcc.Graph(
+                    id='line-chart',
+                    figure=px.line(df, x='Category', y='Value2', title='Line Chart 2', template='plotly_dark')
+                ),
 
-# Layout of the dashboard
-app.layout = html.Div([
-    html.H1("Simple Sales Dashboard"),
-    
-    # Dropdown for selecting a category
-    html.Label("Select Category:"),
-    dcc.Dropdown(
-        id='category-dropdown',
-        options=[{'label': cat, 'value': cat} for cat in df['Category']],
-        value='Electronics',  # Default value
-        clearable=False
-    ),
-    
-    # Bar chart for sales
-    dcc.Graph(id='sales-bar-chart'),
-
-    # Pie chart for sales and profit comparison
-    dcc.Graph(id='profit-pie-chart')
-])
-
-# Callback to update the bar chart based on dropdown selection
-@app.callback(
-    Output('sales-bar-chart', 'figure'),
-    [Input('category-dropdown', 'value')]
+                # Graph 3 (Pie Chart)
+                dcc.Graph(
+                    id='pie-chart',
+                    figure=px.pie(df, names='Category', values='Value3', title='Pie Chart 3', template='plotly_dark')
+                ),
+            ]
+        )
+    ]
 )
-def update_bar_chart(selected_category):
-    filtered_df = df[df['Category'] == selected_category]
-    fig = px.bar(
-        filtered_df,
-        x='Category',
-        y='Sales',
-        title=f'Sales for {selected_category}'
-    )
-    return fig
-
-# Callback to update the pie chart for sales vs profit
-@app.callback(
-    Output('profit-pie-chart', 'figure'),
-    [Input('category-dropdown', 'value')]
-)
-def update_pie_chart(selected_category):
-    filtered_df = df[df['Category'] == selected_category]
-    fig = px.pie(
-        filtered_df,
-        names=['Sales', 'Profit'],
-        values=[filtered_df['Sales'].values[0], filtered_df['Profit'].values[0]],
-        title=f'Sales vs Profit for {selected_category}'
-    )
-    return fig
 
 # Run the app
 if __name__ == '__main__':
