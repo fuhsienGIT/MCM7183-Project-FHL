@@ -10,29 +10,68 @@ app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[db
 app.title = "MCM7183 Exercise 3"
 server = app.server
 
-# Read data from a CSV file
-# Example CSV structure:
-# Category,Series1,Series2,Series3
-# A,10,20,30
-# B,15,25,35
-# C,20,30,40
-df = pd.read_csv('https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/best-selling-manga.csv')
+# Sample DataFrame for sales and profit
+data = {
+    'Category': ['Electronics', 'Furniture', 'Clothing', 'Food'],
+    'Sales': [1000, 1500, 700, 1200],
+    'Profit': [200, 300, 150, 250]
+}
 
-app.layout = [html.H1('MCM7183 Exercise 3'), 
-              dcc.Dropdown(['Shueisha', 'Kodansha'], 'Shueisha', id='dropdown-country'),
-              dcc.Graph(id="graph-scatter"), 
-              #dcc.Dropdown([{'label':'2020', 'value':2020}, {'label':'2010', 'value':2010}, 
-              #              {'label':'2000', 'value':2000}], 2020, id='dropdown-year'),
-              dcc.Slider(20, 100, 5, value=5, id='slider-Approximate sales in million(s)',
-                         marks = {i: str(i) for i in range(20, 100, 5)}),
-              dcc.Graph(id="graph-pie")]
+df = pd.DataFrame(data)
 
-#@callback(
-#    Output('graph-scatter', 'figure'),
-#    Output('graph-pie', 'figure'),
-#    Input('dropdown-country', 'value'),
-#    Input('slider-year', 'value')
-#)
+# Initialize the Dash app
+app = dash.Dash(__name__)
 
+# Layout of the dashboard
+app.layout = html.Div([
+    html.H1("Simple Sales Dashboard"),
+    
+    # Dropdown for selecting a category
+    html.Label("Select Category:"),
+    dcc.Dropdown(
+        id='category-dropdown',
+        options=[{'label': cat, 'value': cat} for cat in df['Category']],
+        value='Electronics',  # Default value
+        clearable=False
+    ),
+    
+    # Bar chart for sales
+    dcc.Graph(id='sales-bar-chart'),
+
+    # Pie chart for sales and profit comparison
+    dcc.Graph(id='profit-pie-chart')
+])
+
+# Callback to update the bar chart based on dropdown selection
+@app.callback(
+    Output('sales-bar-chart', 'figure'),
+    [Input('category-dropdown', 'value')]
+)
+def update_bar_chart(selected_category):
+    filtered_df = df[df['Category'] == selected_category]
+    fig = px.bar(
+        filtered_df,
+        x='Category',
+        y='Sales',
+        title=f'Sales for {selected_category}'
+    )
+    return fig
+
+# Callback to update the pie chart for sales vs profit
+@app.callback(
+    Output('profit-pie-chart', 'figure'),
+    [Input('category-dropdown', 'value')]
+)
+def update_pie_chart(selected_category):
+    filtered_df = df[df['Category'] == selected_category]
+    fig = px.pie(
+        filtered_df,
+        names=['Sales', 'Profit'],
+        values=[filtered_df['Sales'].values[0], filtered_df['Profit'].values[0]],
+        title=f'Sales vs Profit for {selected_category}'
+    )
+    return fig
+
+# Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run_server(debug=True)
