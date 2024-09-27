@@ -10,8 +10,8 @@ app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[db
 app.title = "MCM7183 Exercise 3"
 server = app.server
 
-df = pd.read_csv("https://raw.githubusercontent.com/wenjiun/MCM7183Exercise3/main/assets/gdp_1960_2020.csv")
-subset_2020 = df[df['year'].isin([2020])]
+df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/Big_Black_Money_Dataset.csv")
+subset_Illegal = df[df['Source of Money'].isin([“Illegal”])]
 
 image_path = 'https://raw.githubusercontent.com/wenjiun/MCM7183Exercise3/main/assets/logo-mmu.png'
 
@@ -76,7 +76,7 @@ dbc.Col(html.Img(src=image_path, className="m-2"))])
         return [
                 html.H1('Yearly GDP',
                         style={'textAlign':'center'}),
-dbc.Row(dbc.Col(dcc.Dropdown(subset_2020['country'], ['Malaysia'], id='dropdown-country', multi=True, className="mt-5"), width={"size": 4, "offset": 4})), 
+dbc.Row(dbc.Col(dcc.Dropdown(subset_Illegal['Country'], ['Malaysia'], id='dropdown-country', multi=True, className="mt-5"), width={"size": 4, "offset": 4})), 
 dbc.Row(dcc.Graph(id="graph-scatter"))
                 ]
     elif pathname == "/page-2":
@@ -103,8 +103,8 @@ dbc.Row(dcc.Graph(id="graph-pie"))
 def update_graph1(countries_selected):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     for country_selected in countries_selected:
-        subset_Country = df[df['country'].isin([country_selected])]
-        trace = go.Scatter(x=subset_Country["year"], y=subset_Country["gdp"], name=country_selected)
+        subset_Country = df[df['Country'].isin([country_selected])]
+        trace = go.Scatter(x=subset_Country["Amount (USD)"], y=subset_Country["Industry"], name=country_selected)
         fig.add_trace(trace)
     return fig;
 
