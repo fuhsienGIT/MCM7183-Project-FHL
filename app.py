@@ -6,7 +6,7 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 from plotly.subplots import make_subplots
 
-app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.PULSE])
+app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.CERULEAN])
 app.title = "MCM7183 Exercise 3"
 server = app.server
 
