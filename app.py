@@ -26,22 +26,9 @@ trace1 = go.Bar(
     marker=dict(color='blue', pattern_shape="x")  # Style 1: Blue bars with 'x' pattern
 )
 
-trace2 = go.Bar(
-    x=df['Category'], 
-    y=df['Series2'], 
-    name='Series 2',
-    marker=dict(color='green', pattern_shape="dot")  # Style 2: Green bars with dots pattern
-)
-
-trace3 = go.Bar(
-    x=df['Category'], 
-    y=df['Series3'], 
-    name='Series 3',
-    marker=dict(color='orange', pattern_shape="|")  # Style 3: Orange bars with vertical line pattern
-)
 
 # Create the figure with all three traces (bars)
-fig = go.Figure(data=[trace1, trace2, trace3])
+fig = go.Figure(data=[trace1])
 
 # Customize the layout to group the bars
 fig.update_layout(
