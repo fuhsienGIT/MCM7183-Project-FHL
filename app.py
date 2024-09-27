@@ -28,11 +28,11 @@ app.layout = [html.H1('MCM7183 Exercise 3'),
               dcc.Graph(id="graph-pie")]
 
 #@callback(
-    Output('graph-scatter', 'figure'),
-    Output('graph-pie', 'figure'),
-    Input('dropdown-country', 'value'),
-    Input('slider-year', 'value')
-)
+#    Output('graph-scatter', 'figure'),
+#    Output('graph-pie', 'figure'),
+#    Input('dropdown-country', 'value'),
+#    Input('slider-year', 'value')
+#)
 
 if __name__ == '__main__':
     app.run(debug=True)
