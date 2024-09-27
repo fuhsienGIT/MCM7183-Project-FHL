@@ -23,8 +23,8 @@ app.layout = [html.H1('MCM7183 Exercise 3'),
               dcc.Graph(id="graph-scatter"), 
               #dcc.Dropdown([{'label':'2020', 'value':2020}, {'label':'2010', 'value':2010}, 
               #              {'label':'2000', 'value':2000}], 2020, id='dropdown-year'),
-              dcc.Slider(20, 517, 5, value=517, id='slider-year',
-                         marks = {i: str(i) for i in range(20, 517, 5)}),
+              dcc.Slider('Shōjo', 'Seinen', 5, value=5, id='slider-year',
+                         marks = {i: str(i) for i in range('Shōjo', 'Seinen', 5)}),
               dcc.Graph(id="graph-pie")]
 
 #@callback(
