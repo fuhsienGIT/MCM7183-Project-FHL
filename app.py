@@ -33,6 +33,7 @@ app.layout = [html.H1('MCM7183 Exercise 3'),
     Output('graph-pie', 'figure'),
     Input('dropdown-country', 'value'),
     Input('slider-year', 'value')
+)
 
 # Create traces for each series with different styles
 trace1 = go.Bar(
@@ -70,3 +71,5 @@ fig.update_layout(
 # Show the plot
 fig.show()
 
+if __name__ == '__main__':
+    app.run(debug=True)
