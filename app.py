@@ -28,7 +28,7 @@ trace1 = go.Bar(
 
 trace2 = go.Bar(
     x=df['Manga series'], 
-    y=df['Publisher'], 
+    y=df['No. of collected volumes'], 
     name='Manga',
     marker=dict(color='green', pattern_shape="dot")  # Style 2: Green bars with dots pattern
 )
