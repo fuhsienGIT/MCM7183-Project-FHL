@@ -18,6 +18,22 @@ server = app.server
 # C,20,30,40
 df = pd.read_csv('https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/best-selling-manga.csv')
 
+app.layout = [html.H1('MCM7183 Exercise 3'), 
+              html.Img(src=image_path), 
+              dcc.Dropdown(['Shueisha', 'Kodansha'], 'Shueisha', id='dropdown-country'),
+              dcc.Graph(id="graph-scatter"), 
+              #dcc.Dropdown([{'label':'2020', 'value':2020}, {'label':'2010', 'value':2010}, 
+              #              {'label':'2000', 'value':2000}], 2020, id='dropdown-year'),
+              dcc.Slider(20, 517, 5, value=2020, id='slider-year',
+                         marks = {i: str(i) for i in range(20, 517, 5)}),
+              dcc.Graph(id="graph-pie")]
+
+@callback(
+    Output('graph-scatter', 'figure'),
+    Output('graph-pie', 'figure'),
+    Input('dropdown-country', 'value'),
+    Input('slider-year', 'value')
+
 # Create traces for each series with different styles
 trace1 = go.Bar(
     x=df['Manga series'], 
