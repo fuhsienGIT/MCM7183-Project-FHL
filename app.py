@@ -19,9 +19,6 @@ data = {
 
 df = pd.DataFrame(data)
 
-# Initialize the Dash app
-app = dash.Dash(__name__)
-
 # Layout of the dashboard
 app.layout = html.Div([
     html.H1("Simple Sales Dashboard"),
