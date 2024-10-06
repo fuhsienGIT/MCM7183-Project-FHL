@@ -59,8 +59,8 @@ def render_content(tab):
 
     elif tab == 'tab-3':
         # Scatter plot showing the box office performance
-        fig = px.scatter(df, x='title', y='release_year', size='BoxOffice', title='Box Office Performance',
-                         labels={'release_year': 'Box Office (in million $)'}, template='plotly_white')
+        fig = px.scatter(df, x='title', y='duration', size='BoxOffice', title='Box Office Performance',
+                         labels={'duration': 'Box Office (in million $)'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
 # Run the app
