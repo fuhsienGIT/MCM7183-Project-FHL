@@ -10,54 +10,63 @@ app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[db
 app.title = "MCM7183 Exercise 3"
 server = app.server
 
-# Sample data for the graphs
-df = pd.DataFrame({
-    "Category": ["A", "B", "C", "D"],
-    "Value1": [10, 20, 30, 40],
-    "Value2": [40, 30, 20, 10],
-    "Value3": [25, 35, 15, 45]
-})
+# Sample movie rating data
+data = {
+    'Movie': ['Movie A', 'Movie B', 'Movie C', 'Movie D', 'Movie E'],
+    'Rating': [8.5, 7.8, 9.0, 6.5, 8.2],
+    'Votes': [1200, 1500, 950, 1100, 1300],
+    'BoxOffice': [80, 150, 200, 50, 100]
+}
 
-# Define layout of the dashboard
+df = pd.DataFrame(data)
+
+# Initialize Dash app
+app = dash.Dash(__name__)
+
+# Define the layout of the dashboard with tabs
 app.layout = html.Div(
-    style={'backgroundColor': '#2c2c2c', 'color': '#FFFFFF', 'textAlign': 'center'},
+    style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
     children=[
-        # Top navigation bar
-        html.Div(
-            style={'display': 'flex', 'justifyContent': 'center', 'padding': '10px', 'backgroundColor': '#333'},
-            children=[
-                html.Button('Graph 1', id='btn-1', style={'color': '#FFFFFF', 'backgroundColor': '#1f77b4'}),
-                html.Button('Graph 2', id='btn-2', style={'color': '#FFFFFF', 'backgroundColor': '#ff7f0e'}),
-                html.Button('Graph 3', id='btn-3', style={'color': '#FFFFFF', 'backgroundColor': '#2ca02c'}),
-            ]
-        ),
-        
-        # Content area for graphs
-        html.Div(
-            style={'display': 'flex', 'justifyContent': 'center', 'padding': '20px'},
-            children=[
-                # Graph 1 (Bar Chart)
-                dcc.Graph(
-                    id='bar-chart',
-                    figure=px.bar(df, x='Category', y='Value1', title='Bar Chart 1', template='plotly_dark')
-                ),
-                
-                # Graph 2 (Line Chart)
-                dcc.Graph(
-                    id='line-chart',
-                    figure=px.line(df, x='Category', y='Value2', title='Line Chart 2', template='plotly_dark')
-                ),
+        # Title
+        html.H1("Movie Ratings Dashboard", style={'textAlign': 'center'}),
 
-                # Graph 3 (Pie Chart)
-                dcc.Graph(
-                    id='pie-chart',
-                    figure=px.pie(df, names='Category', values='Value3', title='Pie Chart 3', template='plotly_dark')
-                ),
-            ]
-        )
+        # Tabs for different views
+        dcc.Tabs(id='tabs-example', value='tab-1', children=[
+            dcc.Tab(label='Rating Distribution', value='tab-1'),
+            dcc.Tab(label='Votes Count', value='tab-2'),
+            dcc.Tab(label='Box Office Performance', value='tab-3'),
+        ]),
+
+        # Content area for graphs
+        html.Div(id='tabs-content')
     ]
 )
+
+# Define callback to update graphs based on the selected tab
+@app.callback(
+    Output('tabs-content', 'children'),
+    [Input('tabs-example', 'value')]
+)
+def render_content(tab):
+    if tab == 'tab-1':
+        # Bar chart showing movie ratings
+        fig = px.bar(df, x='Movie', y='Rating', title='Movie Rating Distribution',
+                     labels={'Rating': 'Rating Score'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
+
+    elif tab == 'tab-2':
+        # Line chart showing the number of votes
+        fig = px.line(df, x='Movie', y='Votes', title='Movie Votes Count',
+                      labels={'Votes': 'Number of Votes'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
+
+    elif tab == 'tab-3':
+        # Scatter plot showing the box office performance
+        fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
+                         labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
 
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
+
