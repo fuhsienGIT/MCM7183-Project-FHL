@@ -18,7 +18,7 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
-df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/disney_plus_titles.csv")
+df = pd.DataFrame(data)
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
@@ -48,16 +48,16 @@ app.layout = html.Div(
 def render_content(tab, selected_movie):
     if tab == 'tab-1':
         # Filter data if a movie is selected in the dropdown
-        filtered_df = df[df['title'] == selected_movie] if selected_movie else df
+        filtered_df = df[df['Movie'] == selected_movie] if selected_movie else df
 
         # Bar chart showing movie ratings
-        fig = px.bar(filtered_df, x='title', y='rating', title='Movie Rating Distribution',
-                     labels={'rating': 'Rating Score'}, template='plotly_white')
+        fig = px.bar(filtered_df, x='Movie', y='Rating', title='Movie Rating Distribution',
+                     labels={'Rating': 'Rating Score'}, template='plotly_white')
 
         # Dropdown for filtering by movie
         dropdown = dcc.Dropdown(
             id='movie-dropdown',
-            options=[{'label': movie, 'value': movie} for movie in df['title']],
+            options=[{'label': movie, 'value': movie} for movie in df['Movie']],
             placeholder="Select a movie",
             value=None,  # Default value
             style={'width': '50%', 'margin': 'auto'}
@@ -67,14 +67,14 @@ def render_content(tab, selected_movie):
 
     elif tab == 'tab-2':
         # Pie chart showing the distribution of votes
-        fig = px.pie(df, names='title', values='type', title='Votes Distribution',
-                     labels={'type': 'Number of Votes'}, template='plotly_white')
+        fig = px.pie(df, names='Movie', values='Votes', title='Votes Distribution',
+                     labels={'Votes': 'Number of Votes'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
         # Scatter plot showing box office performance
-        fig = px.scatter(df, x='title', y='duration', size='duration', title='Box Office Performance',
-                         labels={'duration': 'Box Office (in million $)'}, template='plotly_white')
+        fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
+                         labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
 # Run the app
