@@ -18,7 +18,7 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
-df = pd.DataFrame(data)
+df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/disney_plus_titles.csv")
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
@@ -47,20 +47,20 @@ app.layout = html.Div(
 def render_content(tab):
     if tab == 'tab-1':
         # Bar chart showing movie ratings
-        fig = px.bar(df, x='Movie', y='Rating', title='Movie Rating Distribution',
-                     labels={'Rating': 'Rating Score'}, template='plotly_white')
+        fig = px.bar(df, x='title', y='rating', title='Movie Rating Distribution',
+                     labels={'rating': 'Rating Score'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-2':
         # Line chart showing the number of votes
-        fig = px.line(df, x='Movie', y='Votes', title='Movie Votes Count',
-                      labels={'Votes': 'Number of Votes'}, template='plotly_white')
+        fig = px.line(df, x='title', y='type', title='Movie Votes Count',
+                      labels={'type': 'Number of Votes'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
         # Scatter plot showing the box office performance
-        fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
-                         labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
+        fig = px.scatter(df, x='title', y='release_year', size='BoxOffice', title='Box Office Performance',
+                         labels={'release_year': 'Box Office (in million $)'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
 # Run the app
