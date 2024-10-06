@@ -51,7 +51,7 @@ def render_content(tab, selected_movie):
         filtered_df = df[df['title'] == selected_movie] if selected_movie else df
 
         # Bar chart showing movie ratings
-        fig = px.bar(filtered_df, x='title', y='Rating', title='Movie Rating Distribution',
+        fig = px.bar(filtered_df, x='title', y='rating', title='Movie Rating Distribution',
                      labels={'rating': 'Rating Score'}, template='plotly_white')
 
         # Dropdown for filtering by movie
@@ -67,13 +67,13 @@ def render_content(tab, selected_movie):
 
     elif tab == 'tab-2':
         # Pie chart showing the distribution of votes
-        fig = px.pie(df, names='Movie', values='Votes', title='Votes Distribution',
+        fig = px.pie(df, names='title', values='type', title='Votes Distribution',
                      labels={'type': 'Number of Votes'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
         # Scatter plot showing box office performance
-        fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
+        fig = px.scatter(df, x='title', y='duration', size='duration', title='Box Office Performance',
                          labels={'duration': 'Box Office (in million $)'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
