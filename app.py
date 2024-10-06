@@ -53,15 +53,16 @@ def render_content(tab):
 
     elif tab == 'tab-2':
         # Line chart showing the number of votes
-        fig = px.line(df, x='title', y='type', title='Movie Votes Count',
-                      labels={'type': 'Number of Votes'}, template='plotly_white')
-        return dcc.Graph(figure=fig)
+        fig2 = px.pie(pie_df,labels="type",names="Continent")
+        pie_df = {'type': mylabels,'GDP': pie_data}
+
+        return dcc.Graph(figure=fig2)
 
     elif tab == 'tab-3':
         # Scatter plot showing the box office performance
-        fig = px.scatter(df, x='title', y='duration', size='BoxOffice', title='Box Office Performance',
+        fig3 = px.scatter(df, x='title', y='duration', size='BoxOffice', title='Box Office Performance',
                          labels={'duration': 'Box Office (in million $)'}, template='plotly_white')
-        return dcc.Graph(figure=fig)
+        return dcc.Graph(figure=fig3)
 
 # Run the app
 if __name__ == '__main__':
