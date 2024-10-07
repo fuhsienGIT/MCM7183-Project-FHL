@@ -38,6 +38,27 @@ df.columns = ['Title', 'Score', 'Popularity', 'Genres']
 # Handle missing values (if any) by dropping rows with missing data
 df.dropna(inplace=True)
 
+# Define genre mapping to the six categories
+def categorize_genres(genres):
+    genres = genres.lower()
+    if 'action' in genres:
+        return 'Action'
+    elif 'adventure' in genres:
+        return 'Adventure'
+    elif 'comedy' in genres:
+        return 'Comedy'
+    elif 'sci-fi' in genres or 'science fiction' in genres:
+        return 'Sci-Fi'
+    elif 'slice of life' in genres:
+        return 'Slice of Life'
+    elif 'fantasy' in genres:
+        return 'Fantasy'
+    else:
+        return 'Other'
+
+# Apply the genre mapping to the Genres column
+df['Main Genre'] = df['Genres'].apply(categorize_genres)
+
 # Categorize movies into score tiers based on the new ranges
 def categorize_movie(score):
     if 8.0 <= score <= 10:
@@ -56,6 +77,7 @@ df_low_tier = df[df['Score Tier'] == 'Low Tier'].drop_duplicates(subset='Score')
 
 # Combine the top 10 movies from each tier
 df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
+
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
@@ -94,15 +116,15 @@ def render_content(tab):
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-2':
-        # Pie chart showing the distribution of Genres
-        fig = px.pie(df_limited, names='Genres', title='Distribution of Genres in Top Movies',
-                     labels={'Genres': 'Genres'}, template='plotly_white')
+        # Pie chart showing the distribution of genres among the six categories
+        fig = px.pie(df_limited, names='Main Genre', title='Distribution of Genres in Top Movies',
+                     labels={'Main Genre': 'Genres'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
         # Scatter plot showing genres vs score
-        fig = px.scatter(df_limited, x='Genres', y='Score', size='Popularity', title='Genres vs Score Performance',
-                         labels={'Genres': 'Genres', 'Score': 'Anime Score'}, template='plotly_white')
+        fig = px.scatter(df_limited, x='Main Genre', y='Score', size='Popularity', title='Genres vs Score Performance',
+                         labels={'Main Genre': 'Genres', 'Score': 'Anime Score'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
 # Run the app
