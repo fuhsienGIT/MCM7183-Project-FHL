@@ -84,7 +84,7 @@ app.layout = html.Div(
 def render_content(tab):
     if tab == 'tab-1':
         # Bar chart showing anime scores grouped by score tier
-        fig = px.bar(df, x='Title', y='Score', color='Score Tier', barmode='group',
+        fig = px.bar(df_limited, x='Title', y='Score', color='Score Tier', barmode='group',
                      title='Anime Score Distribution by Tier',
                      labels={'Score': 'Score Value', 'Score Tier': 'Score Category'},
                      template='plotly_white')
@@ -93,13 +93,13 @@ def render_content(tab):
 
     elif tab == 'tab-2':
         # Pie chart showing the distribution of ranked vs members
-        fig = px.pie(df, names='Title', values='Ranked', title='Ranked Distribution by Members',
+        fig = px.pie(df_limited, names='Title', values='Ranked', title='Ranked Distribution by Members',
                      labels={'Ranked': 'Ranked Value'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
         # Scatter plot showing members vs score
-        fig = px.scatter(df, x='Members', y='Score', size='Members', title='Members vs Score Performance',
+        fig = px.scatter(df_limited, x='Members', y='Score', size='Members', title='Members vs Score Performance',
                          labels={'Members': 'Number of Members', 'Score': 'Anime Score'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
