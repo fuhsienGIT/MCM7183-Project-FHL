@@ -49,6 +49,14 @@ def categorize_movie(score):
 
 df['Score Tier'] = df['Score'].apply(categorize_movie)
 
+# Limit each tier to 10 movies
+df_top_tier = df[df['Score Tier'] == 'Top Tier'].head(10)
+df_middle_tier = df[df['Score Tier'] == 'Middle Tier'].head(10)
+df_low_tier = df[df['Score Tier'] == 'Low Tier'].head(10)
+
+# Combine the top 10 movies from each tier
+df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
+
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
