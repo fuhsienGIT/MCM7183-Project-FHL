@@ -23,7 +23,7 @@ df = pd.DataFrame(data)
 df_anime = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/anime.csv")
 
 # Categorize movies into rating tiers
-def categorize_movie(rating):
+def categorize_score(rating):
     if rating >= 8.0:
         return 'Top Tier'
     elif rating >= 6.5:
@@ -31,7 +31,7 @@ def categorize_movie(rating):
     else:
         return 'Low Tier'
 
-df['Rating Tier'] = df['Rating'].apply(categorize_movie)
+df['Rating Tier'] = df['score'].apply(categorize_score)
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
