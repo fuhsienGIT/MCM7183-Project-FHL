@@ -29,11 +29,11 @@ df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-F
 print(df.head())  # Check what the dataset looks like
 
 # Remove unnecessary columns (based on inspection, you can adjust this)
-columns_to_keep = ['title', 'mean', 'ranked', 'members']  # Keeping only necessary columns
+columns_to_keep = ['Title', 'Score', 'Popularity', 'Genres']  # Keeping only necessary columns
 df = df[columns_to_keep]
 
 # Rename columns for readability
-df.columns = ['Title', 'Score', 'Ranked', 'Members']
+df.columns = ['Title', 'Score', 'Popularity', 'Genres']
 
 # Handle missing values (if any) by dropping rows with missing data
 df.dropna(inplace=True)
