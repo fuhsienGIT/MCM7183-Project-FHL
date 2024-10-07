@@ -78,6 +78,8 @@ df_low_tier = df[df['Score Tier'] == 'Low Tier'].drop_duplicates(subset='Score')
 # Combine the top 10 movies from each tier
 df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
 
+# Get the top 10 movies by popularity (lowest ranked values)
+df_top_ranked = df.nsmallest(10, 'Popularity')
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
@@ -90,7 +92,7 @@ app.layout = html.Div(
         dcc.Tabs(id='tabs-example', value='tab-1', children=[
             dcc.Tab(label='Score Distribution by Tier', value='tab-1'),
             dcc.Tab(label='Genres Distribution (Pie)', value='tab-2'),
-            dcc.Tab(label='Genres vs Score (Scatter)', value='tab-3'),
+            dcc.Tab(label='Top 10 Movies by Popularity', value='tab-3'),
         ]),
 
         # Content area for graphs
@@ -122,9 +124,14 @@ def render_content(tab):
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
-        # Scatter plot showing genres vs score
-        fig = px.scatter(df_limited, x='Main Genre', y='Score', size='Popularity', title='Genres vs Score Performance',
-                         labels={'Main Genre': 'Genres', 'Score': 'Anime Score'}, template='plotly_white')
+        # Horizontal bar chart showing the top 10 movies by Popularity (lowest rank values)
+        fig = px.bar(df_top_ranked, x='Popularity', y='Title', orientation='h',
+                     title='Top 10 Movies by Popularity (Lowest Rank)',
+                     labels={'Popularity': 'Popularity (Lower is Better)', 'Title': 'Anime Title'},
+                     template='plotly_white')
+
+        # Customize layout to ensure readability
+        fig.update_layout(xaxis={'categoryorder': 'total ascending'}, yaxis={'autorange': 'reversed'})
         return dcc.Graph(figure=fig)
 
 # Run the app
