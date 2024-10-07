@@ -57,9 +57,6 @@ df_low_tier = df[df['Score Tier'] == 'Low Tier'].drop_duplicates(subset='Score')
 # Combine the top 10 movies from each tier
 df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
 
-# Initialize Dash app
-app = dash.Dash(__name__)
-
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
