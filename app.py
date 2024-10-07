@@ -23,15 +23,15 @@ df = pd.DataFrame(data)
 df_anime = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
 
 # Categorize movies into rating tiers
-def categorize_Score(rating):
-    if rating >= 8.0:
+def categorize_Score(score):
+    if score >= 8.0:
         return 'Top Tier'
-    elif rating >= 6.5:
+    elif score >= 6.5:
         return 'Middle Tier'
     else:
         return 'Low Tier'
 
-df['Rating Tier'] = df['Score'].apply(categorize_Score)
+df['Score Tier'] = df['Score'].apply(categorize_Score)
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
@@ -62,7 +62,7 @@ def render_content(tab):
         # Bar chart showing movie ratings grouped by rating tier
         fig = px.bar(df_anime, x='Title', y='Score', color='Rating Tier', barmode='group',
                      title='Movie Rating Distribution by Tier',
-                     labels={'Score': 'Rating Score', 'Rating Tier': 'Rating Category'},
+                     labels={'Score': 'Score Value', 'Score Tier': 'Rating Category'},
                      template='plotly_white')
 
         return dcc.Graph(figure=fig)
