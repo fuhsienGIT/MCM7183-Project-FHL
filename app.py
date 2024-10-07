@@ -62,7 +62,7 @@ def render_content(tab):
         # Bar chart showing movie ratings grouped by rating tier
         fig = px.bar(df_anime, x='Title', y='Score', color='Score Tier', barmode='group',
                      title='Movie Rating Distribution by Tier',
-                     labels={'Score': 'Score Value', 'Score Tier': 'Rating Category'},
+                     labels={'Score': 'Score Value', 'Score Tier': 'Score Category'},
                      template='plotly_white')
 
         return dcc.Graph(figure=fig)
