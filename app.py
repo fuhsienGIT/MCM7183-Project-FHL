@@ -21,6 +21,8 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
+# Load the dataset
+df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
 # Data Cleaning Steps
 
 # Inspect the dataset to identify columns
