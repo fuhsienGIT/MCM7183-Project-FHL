@@ -18,7 +18,7 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
-pd.DataFrame(data)
+df = pd.DataFrame(data)
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
