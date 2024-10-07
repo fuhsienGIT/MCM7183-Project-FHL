@@ -38,21 +38,21 @@ df.columns = ['Title', 'Score', 'Popularity', 'Genres']
 # Handle missing values (if any) by dropping rows with missing data
 df.dropna(inplace=True)
 
-# Categorize movies into score tiers
+# Categorize movies into score tiers based on the new ranges
 def categorize_movie(score):
-    if score >= 8.0:
+    if 8.0 <= score <= 10:
         return 'Top Tier'
-    elif score >= 6.5:
+    elif 6.0 <= score < 8.0:
         return 'Middle Tier'
     else:
         return 'Low Tier'
 
 df['Score Tier'] = df['Score'].apply(categorize_movie)
 
-# Limit each tier to 10 movies
-df_top_tier = df[df['Score Tier'] == 'Top Tier'].head(10)
-df_middle_tier = df[df['Score Tier'] == 'Middle Tier'].head(10)
-df_low_tier = df[df['Score Tier'] == 'Low Tier'].head(10)
+# Drop duplicates within each tier based on Score, keeping only one movie per score
+df_top_tier = df[df['Score Tier'] == 'Top Tier'].drop_duplicates(subset='Score').head(10)
+df_middle_tier = df[df['Score Tier'] == 'Middle Tier'].drop_duplicates(subset='Score').head(10)
+df_low_tier = df[df['Score Tier'] == 'Low Tier'].drop_duplicates(subset='Score').head(10)
 
 # Combine the top 10 movies from each tier
 df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
