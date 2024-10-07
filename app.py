@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 import plotly.express as px
 import dash_bootstrap_components as dbc
 from plotly.subplots import make_subplots
+import streamlit as st
+import matplotlib.pyplot as plt
 
 app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.CERULEAN])
 app.title = "MCM7183 Exercise 3"
