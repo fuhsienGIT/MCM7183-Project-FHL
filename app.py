@@ -18,9 +18,9 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
-df = pd.DataFrame(data)
+#df = pd.DataFrame(data)
 
-df_anime = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
 
 # Categorize movies into rating tiers
 def categorize_Score(score):
@@ -67,17 +67,17 @@ def render_content(tab):
 
         return dcc.Graph(figure=fig)
 
-    elif tab == 'tab-2':
+    #elif tab == 'tab-2':
         # Pie chart showing the distribution of votes
-        fig = px.pie(df, names='Movie', values='Votes', title='Votes Distribution',
-                     labels={'Votes': 'Number of Votes'}, template='plotly_white')
-        return dcc.Graph(figure=fig)
+        #fig = px.pie(df, names='Movie', values='Votes', title='Votes Distribution',
+        #             labels={'Votes': 'Number of Votes'}, template='plotly_white')
+        #return dcc.Graph(figure=fig)
 
-    elif tab == 'tab-3':
+    #elif tab == 'tab-3':
         # Scatter plot showing box office performance
-        fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
-                         labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
-        return dcc.Graph(figure=fig)
+        #fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
+        #                 labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
+        #return dcc.Graph(figure=fig)
 
 # Run the app
 if __name__ == '__main__':
