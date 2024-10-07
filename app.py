@@ -20,6 +20,8 @@ data = {
 
 df = pd.DataFrame(data)
 
+df_anime = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/anime.csv")
+
 # Categorize movies into rating tiers
 def categorize_movie(rating):
     if rating >= 8.0:
@@ -58,9 +60,9 @@ app.layout = html.Div(
 def render_content(tab):
     if tab == 'tab-1':
         # Bar chart showing movie ratings grouped by rating tier
-        fig = px.bar(df, x='Movie', y='Rating', color='Rating Tier', barmode='group',
+        fig = px.bar(df_anime, x='title', y='score', color='Rating Tier', barmode='group',
                      title='Movie Rating Distribution by Tier',
-                     labels={'Rating': 'Rating Score', 'Rating Tier': 'Rating Category'},
+                     labels={'score': 'Rating Score', 'Rating Tier': 'Rating Category'},
                      template='plotly_white')
 
         return dcc.Graph(figure=fig)
