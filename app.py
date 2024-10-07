@@ -60,7 +60,7 @@ app.layout = html.Div(
 def render_content(tab):
     if tab == 'tab-1':
         # Bar chart showing movie ratings grouped by rating tier
-        fig = px.bar(df_anime, x='Title', y='Score', color='Rating Tier', barmode='group',
+        fig = px.bar(df_anime, x='Title', y='Score', color='Score Tier', barmode='group',
                      title='Movie Rating Distribution by Tier',
                      labels={'Score': 'Score Value', 'Score Tier': 'Rating Category'},
                      template='plotly_white')
