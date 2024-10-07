@@ -20,65 +20,42 @@ data = {
 
 #df = pd.DataFrame(data)
 
-df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
+movie_data = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
 
-# Categorize movies into score tiers
-def categorize_movie(score):
-    if score >= 8.0:
-        return 'Top Tier'
-    elif score >= 6.5:
-        return 'Middle Tier'
-    else:
-        return 'Low Tier'
+# Function to display the average movie score
+def display_average_score():
+    average_score = movie_data['Score'].mean()
+    st.write(f"Average Movie Score: {average_score}")
 
-df['Score Tier'] = df['Score'].apply(categorize_movie)
+# Function to display the top-rated movies by score
+def display_top_rated_movies():
+    top_rated_movies = movie_data.nlargest(10, 'Score')
+    st.write("Top 10 Rated Movies:")
+    st.dataframe(top_rated_movies)
 
-# Define the layout of the dashboard with tabs
-app.layout = html.Div(
-    style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
-    children=[
-        # Title
-        html.H1("Movie Ratings Dashboard", style={'textAlign': 'center'}),
+# Function to display a histogram of movie scores
+def display_score_histogram():
+    plt.figure(figsize=(10, 6))
+    plt.hist(movie_data['Score'], bins=10, color='blue')
+    plt.xlabel('Score')
+    plt.ylabel('Count')
+    plt.title('Movie Score Distribution')
+    st.pyplot()
 
-        # Tabs for different views
-        dcc.Tabs(id='tabs-example', value='tab-1', children=[
-            dcc.Tab(label='Rating Distribution by Tier', value='tab-1'),
-            dcc.Tab(label='Votes Distribution (Pie)', value='tab-2'),
-            dcc.Tab(label='Box Office Performance (Scatter)', value='tab-3'),
-        ]),
+# Main Streamlit app
+def main():
+    st.title("Movie Rating Dashboard")
 
-        # Content area for graphs
-        html.Div(id='tabs-content')
-    ]
-)
+    # Tabs for different functions
+    tabs = ["Average Score", "Top Rated Movies", "Score Histogram"]
+    selected_tab = st.selectbox("Select a tab:", tabs)
 
-# Define callback to update graphs based on the selected tab
-@app.callback(
-    Output('tabs-content', 'children'),
-    [Input('tabs-example', 'value')]
-)
-def render_content(tab):
-    if tab == 'tab-1':
-        # Bar chart showing movie scores grouped by score tier
-        fig = px.bar(df, x='Title', y='Score', color='Score Tier', barmode='group',
-                     title='Movie Score Distribution by Tier',
-                     labels={'Score': 'Score Value', 'Score Tier': 'Score Category'},
-                     template='plotly_white')
+    if selected_tab == "Average Score":
+        display_average_score()
+    elif selected_tab == "Top Rated Movies":
+        display_top_rated_movies()
+    elif selected_tab == "Score Histogram":
+        display_score_histogram()
 
-        return dcc.Graph(figure=fig)
-
-    #elif tab == 'tab-2':
-        # Pie chart showing the distribution of votes
-        #fig = px.pie(df, names='Movie', values='Votes', title='Votes Distribution',
-        #             labels={'Votes': 'Number of Votes'}, template='plotly_white')
-        #return dcc.Graph(figure=fig)
-
-    #elif tab == 'tab-3':
-        # Scatter plot showing box office performance
-        #fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
-        #                 labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
-        #return dcc.Graph(figure=fig)
-
-# Run the app
-if __name__ == '__main__':
-    app.run_server(debug=True)
+if __name__ == "__main__":
+    main()
