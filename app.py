@@ -20,6 +20,17 @@ data = {
 
 df = pd.DataFrame(data)
 
+# Categorize movies into rating tiers
+def categorize_movie(rating):
+    if rating >= 8.0:
+        return 'Top Tier'
+    elif rating >= 6.5:
+        return 'Middle Tier'
+    else:
+        return 'Low Tier'
+
+df['Rating Tier'] = df['Rating'].apply(categorize_movie)
+
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
@@ -29,7 +40,7 @@ app.layout = html.Div(
 
         # Tabs for different views
         dcc.Tabs(id='tabs-example', value='tab-1', children=[
-            dcc.Tab(label='Rating Distribution', value='tab-1'),
+            dcc.Tab(label='Rating Distribution by Tier', value='tab-1'),
             dcc.Tab(label='Votes Distribution (Pie)', value='tab-2'),
             dcc.Tab(label='Box Office Performance (Scatter)', value='tab-3'),
         ]),
@@ -39,38 +50,20 @@ app.layout = html.Div(
     ]
 )
 
-# Define callback to update graphs based on the selected tab and selected movies in Tab 1
+# Define callback to update graphs based on the selected tab
 @app.callback(
     Output('tabs-content', 'children'),
-    [Input('tabs-example', 'value'),
-     Input('movie-dropdown', 'value')]
+    [Input('tabs-example', 'value')]
 )
-def render_content(tab, selected_movies):
+def render_content(tab):
     if tab == 'tab-1':
-        # Filter data based on the selected movies
-        if selected_movies:
-            filtered_df = df[df['Movie'].isin(selected_movies)]
-        else:
-            filtered_df = df  # If no movie is selected, show all movies
+        # Bar chart showing movie ratings grouped by rating tier
+        fig = px.bar(df, x='Movie', y='Rating', color='Rating Tier', barmode='group',
+                     title='Movie Rating Distribution by Tier',
+                     labels={'Rating': 'Rating Score', 'Rating Tier': 'Rating Category'},
+                     template='plotly_white')
 
-        # Bar chart showing movie ratings for selected movies
-        fig = px.bar(filtered_df, x='Movie', y='Rating', title='Movie Rating Distribution',
-                     labels={'Rating': 'Rating Score'}, template='plotly_white')
-
-        # Dropdown for selecting movie subset
-        dropdown = dcc.Dropdown(
-            id='movie-dropdown',
-            options=[{'label': movie, 'value': movie} for movie in df['Movie']],
-            placeholder="Select one or more movies",
-            multi=True,  # Allow multiple selections
-            value=[],  # Start with no selection
-            style={'width': '50%', 'margin': 'auto', 'marginTop': '20px'}
-        )
-
-        return html.Div([
-            dcc.Graph(figure=fig),  # Bar chart first
-            html.Div(dropdown)  # Dropdown below the bar chart
-        ])
+        return dcc.Graph(figure=fig)
 
     elif tab == 'tab-2':
         # Pie chart showing the distribution of votes
