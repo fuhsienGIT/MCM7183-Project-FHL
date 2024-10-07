@@ -34,21 +34,6 @@ app.layout = html.Div(
             dcc.Tab(label='Box Office Performance (Scatter)', value='tab-3'),
         ]),
 
-        # Dropdown for Tab 1, allowing multi-selection for movie subsets
-        html.Div(
-            id='tab-1-dropdown',
-            children=[
-                dcc.Dropdown(
-                    id='movie-dropdown',
-                    options=[{'label': movie, 'value': movie} for movie in df['Movie']],
-                    placeholder="Select one or more movies",
-                    multi=True,  # Allow multiple selections
-                    value=[],  # Start with no selection
-                    style={'width': '50%', 'margin': 'auto'}
-                )
-            ]
-        ),
-
         # Content area for graphs
         html.Div(id='tabs-content')
     ]
@@ -72,7 +57,20 @@ def render_content(tab, selected_movies):
         fig = px.bar(filtered_df, x='Movie', y='Rating', title='Movie Rating Distribution',
                      labels={'Rating': 'Rating Score'}, template='plotly_white')
 
-        return dcc.Graph(figure=fig)
+        # Dropdown for selecting movie subset
+        dropdown = dcc.Dropdown(
+            id='movie-dropdown',
+            options=[{'label': movie, 'value': movie} for movie in df['Movie']],
+            placeholder="Select one or more movies",
+            multi=True,  # Allow multiple selections
+            value=[],  # Start with no selection
+            style={'width': '50%', 'margin': 'auto', 'marginTop': '20px'}
+        )
+
+        return html.Div([
+            dcc.Graph(figure=fig),  # Bar chart first
+            html.Div(dropdown)  # Dropdown below the bar chart
+        ])
 
     elif tab == 'tab-2':
         # Pie chart showing the distribution of votes
