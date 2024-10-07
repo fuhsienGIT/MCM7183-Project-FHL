@@ -21,44 +21,81 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
-#df = pd.DataFrame(data)
+# Data Cleaning Steps
 
-movie_data = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
+# Inspect the dataset to identify columns
+print(df.head())  # Check what the dataset looks like
 
-# Function to display the average movie score
-def display_average_score():
-    average_score = movie_data['Score'].mean()
-    st.write(f"Average Movie Score: {average_score}")
+# Remove unnecessary columns (based on inspection, you can adjust this)
+columns_to_keep = ['title', 'mean', 'ranked', 'members']  # Keeping only necessary columns
+df = df[columns_to_keep]
 
-# Function to display the top-rated movies by score
-def display_top_rated_movies():
-    top_rated_movies = movie_data.nlargest(10, 'Score')
-    st.write("Top 10 Rated Movies:")
-    st.dataframe(top_rated_movies)
+# Rename columns for readability
+df.columns = ['Title', 'Score', 'Ranked', 'Members']
 
-# Function to display a histogram of movie scores
-def display_score_histogram():
-    plt.figure(figsize=(10, 6))
-    plt.hist(movie_data['Score'], bins=10, color='blue')
-    plt.xlabel('Score')
-    plt.ylabel('Count')
-    plt.title('Movie Score Distribution')
-    st.pyplot()
+# Handle missing values (if any) by dropping rows with missing data
+df.dropna(inplace=True)
 
-# Main Streamlit app
-def main():
-    st.title("Movie Rating Dashboard")
+# Categorize movies into score tiers
+def categorize_movie(score):
+    if score >= 8.0:
+        return 'Top Tier'
+    elif score >= 6.5:
+        return 'Middle Tier'
+    else:
+        return 'Low Tier'
 
-    # Tabs for different functions
-    tabs = ["Average Score", "Top Rated Movies", "Score Histogram"]
-    selected_tab = st.selectbox("Select a tab:", tabs)
+df['Score Tier'] = df['Score'].apply(categorize_movie)
 
-    if selected_tab == "Average Score":
-        display_average_score()
-    elif selected_tab == "Top Rated Movies":
-        display_top_rated_movies()
-    elif selected_tab == "Score Histogram":
-        display_score_histogram()
+# Initialize Dash app
+app = dash.Dash(__name__)
 
-if __name__ == "__main__":
-    main()
+# Define the layout of the dashboard with tabs
+app.layout = html.Div(
+    style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
+    children=[
+        # Title
+        html.H1("Anime Ratings Dashboard", style={'textAlign': 'center'}),
+
+        # Tabs for different views
+        dcc.Tabs(id='tabs-example', value='tab-1', children=[
+            dcc.Tab(label='Score Distribution by Tier', value='tab-1'),
+            dcc.Tab(label='Ranked vs Members (Pie)', value='tab-2'),
+            dcc.Tab(label='Members vs Score (Scatter)', value='tab-3'),
+        ]),
+
+        # Content area for graphs
+        html.Div(id='tabs-content')
+    ]
+)
+
+# Define callback to update graphs based on the selected tab
+@app.callback(
+    Output('tabs-content', 'children'),
+    [Input('tabs-example', 'value')]
+)
+def render_content(tab):
+    if tab == 'tab-1':
+        # Bar chart showing anime scores grouped by score tier
+        fig = px.bar(df, x='Title', y='Score', color='Score Tier', barmode='group',
+                     title='Anime Score Distribution by Tier',
+                     labels={'Score': 'Score Value', 'Score Tier': 'Score Category'},
+                     template='plotly_white')
+
+        return dcc.Graph(figure=fig)
+
+    elif tab == 'tab-2':
+        # Pie chart showing the distribution of ranked vs members
+        fig = px.pie(df, names='Title', values='Ranked', title='Ranked Distribution by Members',
+                     labels={'Ranked': 'Ranked Value'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
+
+    elif tab == 'tab-3':
+        # Scatter plot showing members vs score
+        fig = px.scatter(df, x='Members', y='Score', size='Members', title='Members vs Score Performance',
+                         labels={'Members': 'Number of Members', 'Score': 'Anime Score'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
+
+# Run the app
+if __name__ == '__main__':
+    app.run_server(debug=True)
