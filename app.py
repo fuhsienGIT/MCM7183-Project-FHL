@@ -49,9 +49,6 @@ def categorize_movie(score):
 
 df['Score Tier'] = df['Score'].apply(categorize_movie)
 
-# Initialize Dash app
-app = dash.Dash(__name__)
-
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
