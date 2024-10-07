@@ -18,7 +18,7 @@ data = {
     'BoxOffice': [80, 150, 200, 50, 100]
 }
 
-df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/disney_plus_titles.csv")
+pd.DataFrame(data)
 
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
@@ -34,19 +34,19 @@ app.layout = html.Div(
             dcc.Tab(label='Box Office Performance (Scatter)', value='tab-3'),
         ]),
 
-        # Dropdown for Tab 1
+        # Dropdown for Tab 1, allowing multi-selection for movie subsets
         html.Div(
             id='tab-1-dropdown',
             children=[
                 dcc.Dropdown(
                     id='movie-dropdown',
-                    options=[{'label': movie, 'value': movie} for movie in df['title']],
-                    placeholder="Select a movie",
-                    value=None,  # Default value
+                    options=[{'label': movie, 'value': movie} for movie in df['Movie']],
+                    placeholder="Select one or more movies",
+                    multi=True,  # Allow multiple selections
+                    value=[],  # Start with no selection
                     style={'width': '50%', 'margin': 'auto'}
                 )
-            ],
-            style={'display': 'none'}  # Hidden initially
+            ]
         ),
 
         # Content area for graphs
@@ -54,44 +54,37 @@ app.layout = html.Div(
     ]
 )
 
-# Define callback to toggle visibility of dropdown in Tab 1 and update graphs based on selected tab
+# Define callback to update graphs based on the selected tab and selected movies in Tab 1
 @app.callback(
-    [Output('tabs-content', 'children'),
-     Output('tab-1-dropdown', 'style')],
+    Output('tabs-content', 'children'),
     [Input('tabs-example', 'value'),
      Input('movie-dropdown', 'value')]
 )
-def render_content(tab, selected_movie):
+def render_content(tab, selected_movies):
     if tab == 'tab-1':
-        # Dropdown is visible only on Tab 1
-        dropdown_style = {'display': 'block', 'textAlign': 'center'}
+        # Filter data based on the selected movies
+        if selected_movies:
+            filtered_df = df[df['Movie'].isin(selected_movies)]
+        else:
+            filtered_df = df  # If no movie is selected, show all movies
 
-        # Filter data if a movie is selected in the dropdown
-        filtered_df = df[df['title'] == selected_movie] if selected_movie else df
+        # Bar chart showing movie ratings for selected movies
+        fig = px.bar(filtered_df, x='Movie', y='Rating', title='Movie Rating Distribution',
+                     labels={'Rating': 'Rating Score'}, template='plotly_white')
 
-        # Bar chart showing movie ratings
-        fig = px.bar(filtered_df, x='title', y='rating', title='Movie Rating Distribution',
-                     labels={'rating': 'Rating Score'}, template='plotly_white')
-
-        return dcc.Graph(figure=fig), dropdown_style
+        return dcc.Graph(figure=fig)
 
     elif tab == 'tab-2':
-        # Hide dropdown for other tabs
-        dropdown_style = {'display': 'none'}
-
         # Pie chart showing the distribution of votes
-        fig = px.pie(df, names='title', values='type', title='Votes Distribution',
-                     labels={'type': 'Number of Votes'}, template='plotly_white')
-        return dcc.Graph(figure=fig), dropdown_style
+        fig = px.pie(df, names='Movie', values='Votes', title='Votes Distribution',
+                     labels={'Votes': 'Number of Votes'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
-        # Hide dropdown for other tabs
-        dropdown_style = {'display': 'none'}
-
         # Scatter plot showing box office performance
-        fig = px.scatter(df, x='title', y='BoxOffice', size='duration', title='Box Office Performance',
-                         labels={'duration': 'Box Office (in million $)'}, template='plotly_white')
-        return dcc.Graph(figure=fig), dropdown_style
+        fig = px.scatter(df, x='Movie', y='BoxOffice', size='BoxOffice', title='Box Office Performance',
+                         labels={'BoxOffice': 'Box Office (in million $)'}, template='plotly_white')
+        return dcc.Graph(figure=fig)
 
 # Run the app
 if __name__ == '__main__':
