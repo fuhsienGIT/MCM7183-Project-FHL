@@ -81,6 +81,9 @@ df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
 # Get the top 10 movies by popularity (lowest ranked values)
 df_top_ranked = df.nsmallest(10, 'Popularity')
 
+# Add Scores and Genres to the Titles for display
+df_top_ranked['Title_and_Score'] = df_top_ranked['Title'] + ' (Score: ' + df_top_ranked['Score'].astype(str) + ')'
+
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
@@ -124,10 +127,10 @@ def render_content(tab):
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
-        # Horizontal bar chart showing the top 10 movies by Popularity (lowest rank values)
-        fig = px.bar(df_top_ranked, x='Popularity', y='Title', orientation='h',
-                     title='Top 10 Movies by Popularity (Lowest Rank)',
-                     labels={'Popularity': 'Popularity (Lower is Better)', 'Title': 'Anime Title'},
+        # Horizontal bar chart showing the top 10 movies by Popularity (lowest rank values), including Scores and Genres
+        fig = px.bar(df_top_ranked, x='Popularity', y='Title_and_Score', color='Main Genre', orientation='h',
+                     title='Top 10 Movies by Popularity (Lowest Rank) with Scores and Genres',
+                     labels={'Popularity': 'Popularity (Lower is Better)', 'Title_and_Score': 'Anime Title (Score)'},
                      template='plotly_white')
 
         # Customize layout to ensure readability
