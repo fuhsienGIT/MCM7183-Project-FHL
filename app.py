@@ -57,6 +57,9 @@ df_low_tier = df[df['Score Tier'] == 'Low Tier'].drop_duplicates(subset='Score')
 # Combine the top 10 movies from each tier
 df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
 
+# Initialize Dash app
+app = dash.Dash(__name__)
+
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
@@ -67,8 +70,8 @@ app.layout = html.Div(
         # Tabs for different views
         dcc.Tabs(id='tabs-example', value='tab-1', children=[
             dcc.Tab(label='Score Distribution by Tier', value='tab-1'),
-            dcc.Tab(label='Ranked vs Members (Pie)', value='tab-2'),
-            dcc.Tab(label='Members vs Score (Scatter)', value='tab-3'),
+            dcc.Tab(label='Genres Distribution (Pie)', value='tab-2'),
+            dcc.Tab(label='Genres vs Score (Scatter)', value='tab-3'),
         ]),
 
         # Content area for graphs
@@ -83,24 +86,26 @@ app.layout = html.Div(
 )
 def render_content(tab):
     if tab == 'tab-1':
-        # Bar chart showing anime scores grouped by score tier
+        # Bar chart showing anime scores grouped by score tier (limited to 10 per tier, distinct scores)
         fig = px.bar(df_limited, x='Title', y='Score', color='Score Tier', barmode='group',
-                     title='Anime Score Distribution by Tier',
+                     title='Anime Score Distribution by Tier (Top 10 with Distinct Scores per Tier)',
                      labels={'Score': 'Score Value', 'Score Tier': 'Score Category'},
                      template='plotly_white')
 
+        # Ensure the categories are ordered correctly and are not shifting positions
+        fig.update_layout(xaxis={'categoryorder': 'total ascending'})
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-2':
-        # Pie chart showing the distribution of ranked vs members
-        fig = px.pie(df_limited, names='Title', values='Ranked', title='Ranked Distribution by Members',
-                     labels={'Ranked': 'Ranked Value'}, template='plotly_white')
+        # Pie chart showing the distribution of Genres
+        fig = px.pie(df_limited, names='Genres', title='Distribution of Genres in Top Movies',
+                     labels={'Genres': 'Genres'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
-        # Scatter plot showing members vs score
-        fig = px.scatter(df_limited, x='Members', y='Score', size='Members', title='Members vs Score Performance',
-                         labels={'Members': 'Number of Members', 'Score': 'Anime Score'}, template='plotly_white')
+        # Scatter plot showing genres vs score
+        fig = px.scatter(df_limited, x='Genres', y='Score', size='Popularity', title='Genres vs Score Performance',
+                         labels={'Genres': 'Genres', 'Score': 'Anime Score'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
 # Run the app
