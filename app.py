@@ -84,6 +84,19 @@ df_top_ranked = df.nsmallest(10, 'Popularity')
 # Add Scores and Genres to the Titles for display
 df_top_ranked['Title_and_Score'] = df_top_ranked['Title'] + ' (Score: ' + df_top_ranked['Score'].astype(str) + ')'
 
+# Get the top 3 most popular anime titles for the summary
+df_top_3 = df_top_ranked.head(3)
+top_anime_titles = df_top_3['Title'].tolist()
+
+# Create the formal summary text
+summary_text = """
+Based on the dataset analysis, the Action and Adventure genres stand out as the most favored, 
+consistently appearing in the top-rated anime selections, reflecting their broad appeal among viewers. 
+Additionally, Comedy and Slice of Life maintain significant popularity, particularly in the middle tiers, 
+attracting a different segment of the audience. Sci-Fi and Fantasy genres also show strong performance, 
+appealing to niche interests while still holding a solid place in the rankings.
+"""
+
 # Define the layout of the dashboard with tabs
 app.layout = html.Div(
     style={'backgroundColor': '#f9f9f9', 'color': '#000', 'padding': '10px'},
@@ -96,6 +109,7 @@ app.layout = html.Div(
             dcc.Tab(label='Score Distribution by Tier', value='tab-1'),
             dcc.Tab(label='Genres Distribution (Pie)', value='tab-2'),
             dcc.Tab(label='Top 10 Movies by Popularity', value='tab-3'),
+            dcc.Tab(label='Summary', value='tab-4'),  # New Summary Tab
         ]),
 
         # Content area for graphs
@@ -136,6 +150,16 @@ def render_content(tab):
         # Customize layout to ensure readability
         fig.update_layout(xaxis={'categoryorder': 'total ascending'}, yaxis={'autorange': 'reversed'})
         return dcc.Graph(figure=fig)
+
+    elif tab == 'tab-4':
+        # Summary text displaying the top 3 most popular anime and genre analysis
+        return html.Div(
+            [
+                html.H3("Anime Popularity Summary"),
+                html.P(f"The most popular anime based on the dataset are: {', '.join(top_anime_titles[:3])}."),
+                html.P(summary_text),
+            ]
+        )
 
 # Run the app
 if __name__ == '__main__':
