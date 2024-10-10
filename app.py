@@ -101,7 +101,7 @@ app.layout = html.Div(
         dcc.Tabs(id='tabs-example', value='tab-1', children=[
             dcc.Tab(label='Score Distribution by Tier', value='tab-1'),
             dcc.Tab(label='Genres Distribution (Pie)', value='tab-2'),
-            dcc.Tab(label='Top 10 Movies by Popularity', value='tab-3'),
+            dcc.Tab(label='Top 10 Animes by Popularity', value='tab-3'),
             dcc.Tab(label='Summary', value='tab-4'),  # New Summary Tab
         ]),
 
