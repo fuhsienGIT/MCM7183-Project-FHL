@@ -131,7 +131,13 @@ def render_content(tab):
                      template='plotly_white')
 
         # Ensure the categories are ordered correctly and are not shifting positions
-        fig.update_layout(xaxis={'categoryorder': 'total ascending'})
+        fig.update_layout(xaxis={'categoryorder': 'total ascending'},title_x=0.5)  # Align title to the center)
+
+             # Add a text note about the tiers below the chart
+        tier_text = html.P(
+            "Top Tier: Score 8.0 - 10.0 | Middle Tier: Score 6.0 - 7.9 | Low Tier: Score Below 6.0", 
+            style={'textAlign': 'center', 'fontWeight': 'bold'}
+        )
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-2':
@@ -157,7 +163,7 @@ def render_content(tab):
             [
                 html.H3("Anime Popularity Summary"),
                 html.P(f"The most popular anime based on the dataset are: {', '.join(top_anime_titles[:3])}."),
-                html.P(summary_text),
+                html.P(summary_text, style={'textAlign': 'center'}),
             ]
         )
 
