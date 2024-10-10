@@ -13,13 +13,6 @@ app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[db
 app.title = "MCM7183 Exercise 3"
 server = app.server
 
-# Sample movie rating data
-data = {
-    'Movie': ['Movie A', 'Movie B', 'Movie C', 'Movie D', 'Movie E'],
-    'Rating': [8.5, 7.8, 9.0, 6.5, 8.2],
-    'Votes': [1200, 1500, 950, 1100, 1300],
-    'BoxOffice': [80, 150, 200, 50, 100]
-}
 
 # Load the dataset
 df = pd.read_csv("https://raw.githubusercontent.com/fuhsienGIT/MCM7183-Project-FHL/refs/heads/main/assets/MALratings.csv")
@@ -70,15 +63,15 @@ def categorize_movie(score):
 
 df['Score Tier'] = df['Score'].apply(categorize_movie)
 
-# Drop duplicates within each tier based on Score, keeping only one movie per score
+# Drop duplicates within each tier based on Score, keeping only one anime per score
 df_top_tier = df[df['Score Tier'] == 'Top Tier'].drop_duplicates(subset='Score').head(10)
 df_middle_tier = df[df['Score Tier'] == 'Middle Tier'].drop_duplicates(subset='Score').head(10)
 df_low_tier = df[df['Score Tier'] == 'Low Tier'].drop_duplicates(subset='Score').head(10)
 
-# Combine the top 10 movies from each tier
+# Combine the top 10 animes from each tier
 df_limited = pd.concat([df_top_tier, df_middle_tier, df_low_tier])
 
-# Get the top 10 movies by popularity (lowest ranked values)
+# Get the top 10 animes by popularity (lowest ranked values)
 df_top_ranked = df.nsmallest(10, 'Popularity')
 
 # Add Scores and Genres to the Titles for display
@@ -142,14 +135,14 @@ def render_content(tab):
 
     elif tab == 'tab-2':
         # Pie chart showing the distribution of genres among the six categories
-        fig = px.pie(df_limited, names='Main Genre', title='Distribution of Genres in Top Movies',
+        fig = px.pie(df_limited, names='Main Genre', title='Distribution of Genres in Top Animes',
                      labels={'Main Genre': 'Genres'}, template='plotly_white')
         return dcc.Graph(figure=fig)
 
     elif tab == 'tab-3':
-        # Horizontal bar chart showing the top 10 movies by Popularity (lowest rank values), including Scores and Genres
+        # Horizontal bar chart showing the top 10 animes by Popularity (lowest rank values), including Scores and Genres
         fig = px.bar(df_top_ranked, x='Popularity', y='Title_and_Score', color='Main Genre', orientation='h',
-                     title='Top 10 Movies by Popularity (Lowest Rank) with Scores and Genres',
+                     title='Top 10 Animes by Popularity (Lowest Rank) with Scores and Genres',
                      labels={'Popularity': 'Popularity (Lower is Better)', 'Title_and_Score': 'Anime Title (Score)'},
                      template='plotly_white')
 
@@ -161,8 +154,9 @@ def render_content(tab):
         # Summary text displaying the top 3 most popular anime and genre analysis
         return html.Div(
             [
-                html.H3("Anime Popularity Summary"),
-                html.P(f"The most popular anime based on the dataset are: {', '.join(top_anime_titles[:3])}."),
+                html.H3("Anime Popularity Summary", style={'textAlign': 'center'}),
+                html.P(f"The most popular anime based on the dataset are: {', '.join(top_anime_titles[:3])}.", 
+                       style={'textAlign': 'center'}),
                 html.P(summary_text, style={'textAlign': 'center'}),
             ]
         )
